@@ -1,4 +1,4 @@
-package com.github.ideepakkalra.eventmanagement.modal;
+package com.github.ideepakkalra.eventmanagement.entity;
 
 import lombok.Data;
 import lombok.Getter;

@@ -1,10 +1,10 @@
-package com.github.ideepakkalra.eventmanagement.api;
+package com.github.ideepakkalra.eventmanagement;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest (webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class EventManagementAPIApplicationTest {
+public class EventManagementApplicationTest {
 
     @Test
     void contextLoads() {

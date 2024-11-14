@@ -2,6 +2,7 @@ package com.github.ideepakkalra.eventmanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.util.List;
 
 @Data
@@ -9,13 +10,11 @@ import java.util.List;
 @Table(name = "T_USER")
 public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
+    private String email;
     @Version
-    private int version;
+    private Integer version;
     private String firstName;
     private String lastName;
-    private String email;
-    @ElementCollection
-    private List<String> roles;
+    @ManyToMany
+    private List<Team> teams;
 }

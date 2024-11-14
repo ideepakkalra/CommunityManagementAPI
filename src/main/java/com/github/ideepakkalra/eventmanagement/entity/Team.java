@@ -3,7 +3,7 @@ package com.github.ideepakkalra.eventmanagement.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -16,6 +16,9 @@ public class Team {
     private Integer version;
     private String name;
     private String description;
-    private TeamMember owner;
-    private List<TeamMember> members;
+    private String leader;
+    @OneToMany
+    private Set<TeamMember> members;
+    @ManyToOne
+    private Event event;
 }

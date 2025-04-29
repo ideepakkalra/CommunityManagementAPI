@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
-import java.util.Set;
 
 @Data
 @Entity
@@ -22,6 +21,4 @@ public class Event {
     private Date updatedOn;
     @OneToOne
     private User updatedBy;
-    @OneToMany
-    private Set<Team> teams;
 }

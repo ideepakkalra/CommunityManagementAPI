@@ -5,7 +5,6 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Entity
@@ -15,7 +14,7 @@ public class User {
         MALE, FEMALE
     }
     public enum Status {
-        PENDING, SUBMITTED, ACCEPTED
+        REFERRED, SUBMITTED, ACCEPTED
     }
     public enum Type {
         STANDARD, ADMIN
@@ -25,22 +24,24 @@ public class User {
     private Long id;
     @Version
     private Integer version;
-    private String firstName;
-    private String lastName;
+    @Column(unique = true)
+    private String phoneNumber;
     @Column(unique = true)
     private String email;
+    private String firstName;
+    private String lastName;
     private String description;
-    private String countryCode;
-    private String phoneNumber;
+
     private Gender gender;
     private Date dateOfBirth;
     private List<String> hobbies;
-    private Map<String, String> socialURLs;
     private String photo;
+    private List<String> hereFor;
+    @OneToOne
     private User referredBy;
+    @OneToOne
     private User updatedBy;
     private Date updatedOn;
-    private List<String> hereFor;
-    private Status status;
-    private Type type;
+    private Status status = Status.REFERRED;
+    private Type type = Type.STANDARD;
 }

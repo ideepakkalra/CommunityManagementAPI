@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Map;
 
 @Data
 @Entity
@@ -19,6 +20,5 @@ public class LoginLog {
     private String phoneNumber;
     private Status status;
     private Date date;
-    private String ipAddress;
-    private String metaData;
+    //private Map<String, String> metaData;
 }

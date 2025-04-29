@@ -16,8 +16,8 @@ public class LoginLog {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
-    private String countryCode;
     private String phoneNumber;
+    private String passcode;
     private Status status;
     private Date date;
     //private Map<String, String> metaData;

@@ -14,4 +14,4 @@ spring:
       settings.web-allow-others: false
 logging:
   level:
-    root: DEBUG
+    root: INFO

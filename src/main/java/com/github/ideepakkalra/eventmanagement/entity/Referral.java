@@ -14,7 +14,7 @@ public class Referral {
     }
     @Id
     @GeneratedValue(strategy= GenerationType.UUID)
-    private String key;
+    private String code;
     @Version
     private Integer version;
     @ManyToOne

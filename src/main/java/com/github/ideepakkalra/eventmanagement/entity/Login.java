@@ -20,6 +20,6 @@ public class Login {
     private Date logoutDate;
     @OneToOne
     private User user;
-    private Integer retryCount;
+    private Integer retryCount = 0;
     //private Map<String, String> metaData;
 }

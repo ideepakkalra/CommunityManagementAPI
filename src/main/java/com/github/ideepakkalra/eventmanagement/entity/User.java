@@ -14,7 +14,7 @@ public class User {
         MALE, FEMALE
     }
     public enum Status {
-        REFERRED, SUBMITTED, ACCEPTED, LOCKED
+        REFERRED, SUBMITTED, ACCEPTED
     }
     public enum Type {
         STANDARD, ADMIN
@@ -33,9 +33,9 @@ public class User {
     private String description;
     private Gender gender;
     private Date dateOfBirth;
-    private List<String> hobbies;
-    private String photo;
-    private List<String> hereFor;
+    //private List<String> hobbies;
+    //private String photo;
+    //private List<String> hereFor;
     @OneToOne
     private User referredBy;
     @OneToOne

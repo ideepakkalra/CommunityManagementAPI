@@ -14,7 +14,7 @@ public class User {
         MALE, FEMALE
     }
     public enum Status {
-        REFERRED, SUBMITTED, ACCEPTED
+        REFERRED, SUBMITTED, ACCEPTED, LOCKED
     }
     public enum Type {
         STANDARD, ADMIN

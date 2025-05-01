@@ -23,7 +23,7 @@ public class SessionControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private SessionController sessionController;
+    private LoginController sessionController;
 
     private static final ObjectWriter OBJECT_WRITER = new ObjectMapper().writer();
 

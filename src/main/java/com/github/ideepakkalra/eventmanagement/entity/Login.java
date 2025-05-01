@@ -4,21 +4,22 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.Map;
 
 @Data
 @Entity
-@Table(name = "T_LOGIN_LOG")
-public class LoginLog {
+@Table(name = "T_LOGIN")
+public class Login {
     public enum Status {
-        SUCCESS, FAILURE
+        SUCCESS, FAILURE, LOCKED
     }
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
     private String phoneNumber;
     private String passcode;
     private Status status;
-    private Date date;
+    private Date loginDate;
+    private Date logoutDate;
+    @OneToOne
+    private User user;
+    private Integer retryCount;
     //private Map<String, String> metaData;
 }

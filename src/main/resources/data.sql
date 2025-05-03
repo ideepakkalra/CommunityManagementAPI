@@ -1,3 +1,3 @@
 insert into t_user (id, version, phone_number, email, first_name, last_name, description, gender, date_of_birth, referred_by_id, updated_by_id, updated_on, status, type)
     values (0, 0, '+10000000000', 'deepak.deepakkalra@gmail.com', 'Deepak', 'Kalra', 'Administrator account for this community.', 0, '1900-01-01', 0, 0, '2025-01-01', 2, 1);
-insert into t_login (phone_number, passcode, status, retry_count) values ('+10000000000', '000000', 2, 0);
+insert into t_login (phone_number, passcode, status, user_id, retry_count) values ('+10000000000', '000000', 0, 0, 0);

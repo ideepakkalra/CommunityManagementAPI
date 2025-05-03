@@ -17,19 +17,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-public class SessionControllerTest {
+public class LoginControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private LoginController sessionController;
+    private LoginController loginController;
 
     private static final ObjectWriter OBJECT_WRITER = new ObjectMapper().writer();
 
     @Test
     public void testContextLoad() throws Exception {
-        Assertions.assertThat(sessionController).isNotNull();
+        Assertions.assertThat(loginController).isNotNull();
     }
 
     @Test
@@ -112,7 +112,20 @@ public class SessionControllerTest {
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
         loginRequest.setPasscode("000000");
-        // All Good Now
+        // All Good But No Record Found
+        mockMvc.perform(post("/login")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @Test
+    public void testPost200Response() throws Exception {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setPhoneNumber("+10000000000");
+        loginRequest.setPasscode("000000");
+        // All Good But No Record Found
         mockMvc.perform(post("/login")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)

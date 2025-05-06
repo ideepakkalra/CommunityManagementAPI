@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -17,6 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
+@Sql("/LoginControllerTest.sql")
 public class LoginControllerTest {
 
     @Autowired
@@ -131,5 +133,48 @@ public class LoginControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+    }
+
+    @Test
+    public void testPost500Response() throws Exception {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setPhoneNumber("+10000000001");
+        loginRequest.setPasscode("111111");
+        // First try
+        mockMvc.perform(post("/login")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+        // Second try
+        mockMvc.perform(post("/login")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+        // Third try
+        mockMvc.perform(post("/login")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+        // Fourth try
+        mockMvc.perform(post("/login")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+        // Fifth try
+        mockMvc.perform(post("/login")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+        // Sixth try. Account should be locked by now.
+        mockMvc.perform(post("/login")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
+                .andExpect(MockMvcResultMatchers.status().is5xxServerError());
     }
 }

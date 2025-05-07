@@ -33,9 +33,6 @@ public class User {
     private String description;
     private Gender gender;
     private Date dateOfBirth;
-    //private List<String> hobbies;
-    //private String photo;
-    //private List<String> hereFor;
     @OneToOne
     private User referredBy;
     @OneToOne

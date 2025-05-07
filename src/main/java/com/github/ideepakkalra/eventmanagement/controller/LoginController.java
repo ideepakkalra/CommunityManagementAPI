@@ -22,7 +22,7 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping (value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpSession httpSession) {
         try {
             User user = loginService.login(loginRequest);

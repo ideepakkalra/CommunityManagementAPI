@@ -16,8 +16,10 @@ public class UserRequest {
     @Email (message = "Invalid email address.")
     //@Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Invalid email address.")
     private String email;
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Invalid first name.")
     @Size (max = 100, message = "Invalid first name.")
     private String firstName;
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Invalid last name.")
     @Size (max = 100, message = "Invalid last name.")
     private String lastName;
     @Size (max = 1000, message = "Invalid description.")
@@ -29,10 +31,9 @@ public class UserRequest {
     @NotNull (message = "Invalid referred by.")
     @PositiveOrZero (message = "Invalid referred by.")
     private Integer referredBy;
-    @NotNull (message = "Invalid updated by.")
-    @PositiveOrZero (message = "Invalid updated by.")
+    @Null (message = "Invalid updated by.")
     private Integer updatedBy;
-    @Past (message = "Invalid updated on.")
+    @Null (message = "Invalid updated on.")
     private Date updatedOn;
     @Pattern(regexp = "REFERRED|SUBMITTED|ACCEPTED", message = "Invalid gender.")
     private String status;

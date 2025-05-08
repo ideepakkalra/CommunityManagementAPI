@@ -13,8 +13,9 @@ public class UserService {
     UserRepository userRepository;
 
     public User createUser(UserRequest userRequest) {
-        // create user, login both objects here if new other wise just user obj
-        return userRepository.save(null);
+        // create user, login both objects here if new, otherwise just user obj
+        //return userRepository.save(null);
+        return null;
     }
 
     public User getUserByPhoneNumber(String phoneNumber) {

@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class LoginResponse {
     public enum Status {
-        SUCCESS, FAILURE, LOCKED
+        SUCCESS, FAILURE
     }
     private Status status;
     private String message;

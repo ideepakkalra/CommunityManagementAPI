@@ -6,6 +6,8 @@ import lombok.*;
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "T_EVENT")
 public class Event {

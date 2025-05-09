@@ -7,14 +7,15 @@ import java.util.Date;
 
 @Data
 public class UserRequest {
+    @PositiveOrZero (message = "Invalid id.")
     private Long id;
+    @PositiveOrZero (message = "Invalid version.")
     private Integer version = 0;
     @NotEmpty(message = "Invalid phone number.")
     @Size(min = 10, max = 14, message = "Invalid phone number. Must be between 10-14 numbers with +country code.")
     @Pattern(regexp = "^\\+\\d{1,3}\\d{4,14}$", message = "Invalid phone number. Only numbers allowed.")
     private String phoneNumber;
     @Email (message = "Invalid email address.")
-    //@Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Invalid email address.")
     private String email;
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Invalid first name.")
     @Size (max = 100, message = "Invalid first name.")

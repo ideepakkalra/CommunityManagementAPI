@@ -10,14 +10,12 @@ import com.github.ideepakkalra.eventmanagement.services.CommunityReferralService
 import com.github.ideepakkalra.eventmanagement.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -37,6 +35,20 @@ public class CommunityReferralController {
     @Autowired
     @Qualifier (value = "communicationReferralToCommunicationReferralResponseModelMapper")
     private ModelMapper communicationReferralToCommunicationReferralResponseModelMapper;
+
+    @GetMapping (value = "/referral/{referralId}/{referralCode}")
+    public ResponseEntity<CommunityReferralResponse> get(@PathVariable Integer referralId, @PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+            message = "Invalid code.") String referralCode) {
+        CommunityReferralResponse communityReferralResponse = new CommunityReferralResponse();
+        CommunityReferral communityReferral = communityReferralService.selectByIdAndCode(referralId, referralCode);
+        if (communityReferral != null) {
+            communicationReferralToCommunicationReferralResponseModelMapper.map(communityReferral, communityReferralResponse);
+            communityReferralResponse.setStatus(BaseResponse.Status.SUCCESS);
+            return ResponseEntity.ok(communityReferralResponse);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @PostMapping (value = "/referral")
     public ResponseEntity<CommunityReferralResponse> post(@Valid @RequestBody CommunityReferralRequest communityReferralRequest, HttpSession httpSession) {

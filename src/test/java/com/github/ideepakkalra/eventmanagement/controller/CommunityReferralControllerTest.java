@@ -15,6 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -46,16 +47,33 @@ public class CommunityReferralControllerTest {
         Assertions.assertThat(communityReferralController).isNotNull();
     }
 
+
+
     @Test
-    public void testPost403Response() throws Exception {
-        // With No Content
-        mockMvc.perform(post("/referral")
+    public void testGet4xxResponse() throws Exception {
+        // With invalid id
+        mockMvc.perform(get("/referral/-1/code")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
+        // With invalid code
+        mockMvc.perform(get("/referral/0/code")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+        // All okay
+        mockMvc.perform(get("/referral/0/e3f2d82b-2859-4d0f-a2e7-5c8bc7fee333")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
-    public void testPost400Response() throws Exception {
+    public void testPost4xxResponse() throws Exception {
+        // With No access
+        mockMvc.perform(post("/referral")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isForbidden());
         // With No Content
         mockMvc.perform(post("/referral")
                         .with(csrf())
@@ -213,7 +231,11 @@ public class CommunityReferralControllerTest {
     }
 
     @Test
-    public void testPut400Response() throws Exception {
+    public void testPut4xxResponse() throws Exception {
+        // With No access
+        mockMvc.perform(put("/referral")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isForbidden());
         // With No Content
         mockMvc.perform(put("/referral")
                         .with(csrf())

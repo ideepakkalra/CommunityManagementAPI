@@ -21,4 +21,8 @@ public class CommunityReferralService {
     public CommunityReferral update(CommunityReferral communityReferral) {
         return communityReferralRepository.save(communityReferral);
     }
+
+    public CommunityReferral selectByIdAndCode(Integer referralId, String referralCode) {
+        return communityReferralRepository.findByIdAndCode(referralId, referralCode);
+    }
 }

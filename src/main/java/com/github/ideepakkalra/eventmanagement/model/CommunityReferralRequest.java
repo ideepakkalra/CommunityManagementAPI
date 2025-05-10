@@ -4,15 +4,16 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class CommunityReferralRequest {
     @PositiveOrZero (message = "Invalid id.")
     private Long id;
-    // TODO: Add UUID validation pattern below
-    //@Pattern( regexp = "", message = "Invalid code")
+    @Pattern( regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", message = "Invalid code.")
     private String code;
     @PositiveOrZero (message = "Invalid id.")
     private Integer version;

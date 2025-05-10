@@ -28,7 +28,7 @@ public class CommunityReferral {
     @Column(unique = true)
     private String phoneNumber;
     private State state = State.OPEN;
-    @OneToOne
+    @ManyToOne
     private User updatedBy;
     private Date updatedOn;
 }

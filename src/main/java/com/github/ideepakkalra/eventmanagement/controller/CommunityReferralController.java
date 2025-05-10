@@ -46,6 +46,7 @@ public class CommunityReferralController {
             communityReferralResponse.setMessage("Invalid id / code / version / state.");
             return ResponseEntity.badRequest().body(communityReferralResponse);
         }
+        System.err.println(communityReferralRequest);
         try {
             CommunityReferral communityReferral = communicationReferralRequestToCommunicationReferralModelMapper.map(communityReferralRequest, CommunityReferral.class);
             User user = userService.getUserById((Long) httpSession.getAttribute("user.id"));
@@ -74,6 +75,11 @@ public class CommunityReferralController {
         if (communityReferralRequest.getId() == null || communityReferralRequest.getCode() == null || communityReferralRequest.getVersion() == null || communityReferralRequest.getState() == null || communityReferralRequest.getReferrer() == null) {
             communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
             communityReferralResponse.setMessage("Invalid id / code / version / referrer / state.");
+            return ResponseEntity.badRequest().body(communityReferralResponse);
+        }
+        if (!"ADMIN".equals(httpSession.getAttribute("user.type"))) {
+            communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
+            communityReferralResponse.setMessage("Insufficient privilege.");
             return ResponseEntity.badRequest().body(communityReferralResponse);
         }
         try {

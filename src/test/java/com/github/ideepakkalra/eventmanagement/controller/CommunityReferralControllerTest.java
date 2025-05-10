@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,12 +59,14 @@ public class CommunityReferralControllerTest {
         // With No Content
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
         // With all fields null
         CommunityReferralRequest communityReferralRequest = new CommunityReferralRequest();
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -71,6 +74,7 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setId(-1L);
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -78,6 +82,7 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setId(1L);
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -85,6 +90,7 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setVersion(-1);
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -93,6 +99,7 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setReferrer(null);
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -100,6 +107,7 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setReferrer(-1L);
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -108,6 +116,7 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setPhoneNumber(null);
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -115,6 +124,7 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setPhoneNumber("abcdefghijkl");
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -122,6 +132,7 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setPhoneNumber("910000000000");
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -129,18 +140,21 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setPhoneNumber("+910000000000000000");
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
         communityReferralRequest.setPhoneNumber("+910000");
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
-        communityReferralRequest.setPhoneNumber("+910000000000");
+        communityReferralRequest.setPhoneNumber("+910000000001");
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -148,6 +162,7 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setState("");
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -155,6 +170,7 @@ public class CommunityReferralControllerTest {
         communityReferralRequest.setState("INVALID");
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -162,24 +178,28 @@ public class CommunityReferralControllerTest {
         // Invalid id / version / code / state (from controller)
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
         communityReferralRequest.setCode(null);
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
         communityReferralRequest.setVersion(null);
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
         communityReferralRequest.setId(null);
         mockMvc.perform(post("/referral")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().isBadRequest());
@@ -189,7 +209,184 @@ public class CommunityReferralControllerTest {
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    public void testPut400Response() throws Exception {
+        // With No Content
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+        // With all fields null
+        CommunityReferralRequest communityReferralRequest = new CommunityReferralRequest();
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Invalid Id negative value
+        communityReferralRequest.setId(-1L);
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Invalid Id null
+        communityReferralRequest.setId(null);
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Invalid version negative value
+        communityReferralRequest.setVersion(-1);
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        communityReferralRequest.setVersion(null);
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Invalid referrer null value
+        communityReferralRequest.setReferrer(null);
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Invalid referrer nagetive value
+        communityReferralRequest.setReferrer(-1L);
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        communityReferralRequest.setReferrer(0L);
+        // Invalid phone number null value
+        communityReferralRequest.setPhoneNumber(null);
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Invalid phone number character values
+        communityReferralRequest.setPhoneNumber("abcdefghijkl");
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Invalid phone number invalid country code
+        communityReferralRequest.setPhoneNumber("910000000000");
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Invalid phone number length incorrect
+        communityReferralRequest.setPhoneNumber("+910000000000000000");
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        communityReferralRequest.setPhoneNumber("+910000");
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        communityReferralRequest.setPhoneNumber("+910000000000");
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Invalid state blank
+        communityReferralRequest.setState("");
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Invalid state wrong value
+        communityReferralRequest.setState("INVALID");
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        communityReferralRequest.setState("CLOSED");
+        // Invalid id / version / code / state (from controller)
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        communityReferralRequest.setCode(null);
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        communityReferralRequest.setVersion(null);
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        communityReferralRequest.setId(null);
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
+                .andExpect(status().isBadRequest());
+        // Now lets set correct id / version / code / state
+        // Should get bad request because of insufficient privilege.
+        communityReferralRequest.setId(0L);
+        communityReferralRequest.setVersion(0);
+        communityReferralRequest.setCode("e3f2d82b-2859-4d0f-a2e7-5c8bc7fee333");
+        communityReferralRequest.setState("CLOSED");
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andDo(print())
+                .andExpect(status().isBadRequest());
+        // Set type as ADMIN in session.
+        httpSession.setAttribute("user.type", "ADMIN");
+        mockMvc.perform(put("/referral")
+                        .with(csrf())
+                        .session(httpSession)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
                 .andExpect(status().is2xxSuccessful());
     }
 }

@@ -1,9 +1,12 @@
 package com.github.ideepakkalra.eventmanagement.config;
 
 import com.github.ideepakkalra.eventmanagement.entity.CommunityReferral;
+import com.github.ideepakkalra.eventmanagement.entity.Login;
 import com.github.ideepakkalra.eventmanagement.entity.User;
 import com.github.ideepakkalra.eventmanagement.model.CommunityReferralRequest;
 import com.github.ideepakkalra.eventmanagement.model.CommunityReferralResponse;
+import com.github.ideepakkalra.eventmanagement.model.LoginRequest;
+import com.github.ideepakkalra.eventmanagement.model.LoginResponse;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -31,6 +34,20 @@ public class ModelMapperConfiguration {
         typeMap.addMappings(mapper -> mapper.using(stateConverter).map(CommunityReferral::getState, CommunityReferralResponse::setState));
         Converter<User, Long> referrerConverter = mappingContext -> mappingContext.getSource().getId();
         typeMap.addMappings(mapper -> mapper.using(referrerConverter).map(CommunityReferral::getReferrer, CommunityReferralResponse::setReferrer));
+        return modelMapper;
+    }
+
+    @Bean (name = "loginRequestToLoginModelMapper")
+    public ModelMapper loginRequestToLoginModelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        TypeMap<LoginRequest, Login> typeMap = modelMapper.createTypeMap(LoginRequest.class, Login.class);
+        return modelMapper;
+    }
+
+    @Bean (name = "loginToLoginResponseModelMapper")
+    public ModelMapper loginToLoginResponseModelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        TypeMap<Login, LoginResponse> typeMap = modelMapper.createTypeMap(Login.class, LoginResponse.class);
         return modelMapper;
     }
 }

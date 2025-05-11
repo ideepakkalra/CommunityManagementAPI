@@ -18,30 +18,30 @@ public class LoginService {
     @Autowired
     private LoginRepository loginRepository;
 
-    public User login(LoginRequest loginRequest) throws Exception {
-        Login login = loginRepository.findById(loginRequest.getPhoneNumber()).orElseThrow(AccountNotFoundException::new);
-        if (login.getStatus() == Login.Status.LOCKED) {
+    public Login login(Login login) throws Exception {
+        Login loginEntity = loginRepository.findById(login.getPhoneNumber()).orElseThrow(AccountNotFoundException::new);
+        if (loginEntity.getStatus() == Login.Status.LOCKED) {
             throw new AccountLockedException();
-        } else if (!login.getPasscode().equals(loginRequest.getPasscode())) {
-            login.setRetryCount(login.getRetryCount() + 1);
-            login.setStatus(Login.Status.FAILURE);
-            if (login.getRetryCount() >= 5) {
-                login.setStatus(Login.Status.LOCKED);
+        } else if (!login.getPasscode().equals(loginEntity.getPasscode())) {
+            loginEntity.setRetryCount(loginEntity.getRetryCount() + 1);
+            loginEntity.setStatus(Login.Status.FAILURE);
+            if (loginEntity.getRetryCount() >= 5) {
+                loginEntity.setStatus(Login.Status.LOCKED);
             }
-            loginRepository.save(login);
+            loginRepository.save(loginEntity);
             throw new InvalidCredentialsException();
         }
-        login.setRetryCount(0);
-        login.setStatus(Login.Status.SUCCESS);
-        login.setLoginDate(new Date());
-        loginRepository.save(login);
-        return login.getUser();
+        loginEntity.setRetryCount(0);
+        loginEntity.setStatus(Login.Status.SUCCESS);
+        loginEntity.setLoginDate(new Date());
+        loginRepository.save(loginEntity);
+        return loginEntity;
     }
 
-    public User logout(LoginRequest loginRequest) throws Exception  {
-        Login login = loginRepository.findById(loginRequest.getPhoneNumber()).orElseThrow(AccountNotFoundException::new);
+    public Login logout(Login login) throws Exception  {
+        login = loginRepository.findById(login.getPhoneNumber()).orElseThrow(AccountNotFoundException::new);
         login.setLogoutDate(new Date());
         loginRepository.save(login);
-        return login.getUser();
+        return login;
     }
 }

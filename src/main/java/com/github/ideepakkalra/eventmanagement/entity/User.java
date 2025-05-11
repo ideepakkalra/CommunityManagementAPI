@@ -37,10 +37,10 @@ public class User {
     private Gender gender;
     private Date dateOfBirth;
     @ToString.Exclude
-    @OneToOne
+    @ManyToOne
     private User referredBy;
     @ToString.Exclude
-    @OneToOne
+    @ManyToOne
     private User updatedBy;
     private Date updatedOn;
     private Status status = Status.SUBMITTED;

@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LoginRepository extends JpaRepository<Login, String> {
+    /*@Query ("SELECT l FROM Login l WHERE l.phoneNumber = :phoneNumber AND passcode = :passcode")
+    Login findByPhoneNumberAndPasscode(@Param("phoneNumber") String phoneNumber, @Param("passcode") String passcode);*/
 }

@@ -37,7 +37,7 @@ public class CommunityReferralController {
     private ModelMapper communicationReferralToCommunicationReferralResponseModelMapper;
 
     @GetMapping (value = "/referral/{referralId}/{referralCode}")
-    public ResponseEntity<CommunityReferralResponse> get(@PathVariable Integer referralId, @PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+    public ResponseEntity<CommunityReferralResponse> get(@PathVariable Long referralId, @PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
             message = "Invalid code.") String referralCode) {
         CommunityReferralResponse communityReferralResponse = new CommunityReferralResponse();
         CommunityReferral communityReferral = communityReferralService.selectByIdAndCode(referralId, referralCode);
@@ -61,7 +61,7 @@ public class CommunityReferralController {
         System.err.println(communityReferralRequest);
         try {
             CommunityReferral communityReferral = communicationReferralRequestToCommunicationReferralModelMapper.map(communityReferralRequest, CommunityReferral.class);
-            User user = userService.getUserById((Long) httpSession.getAttribute("user.id"));
+            User user = userService.selectById((Long) httpSession.getAttribute("user.id"));
             communityReferral.setReferrer(user);
             communityReferral.setUpdatedBy(user);
             communityReferral.setUpdatedOn(new Date());
@@ -96,9 +96,9 @@ public class CommunityReferralController {
         }
         try {
             CommunityReferral communityReferral = communicationReferralRequestToCommunicationReferralModelMapper.map(communityReferralRequest, CommunityReferral.class);
-            User referrerUser = userService.getUserById(communityReferralRequest.getReferrer());
+            User referrerUser = userService.selectById(communityReferralRequest.getReferrer());
             communityReferral.setReferrer(referrerUser);
-            User updatedByUser = userService.getUserById((Long) httpSession.getAttribute("user.id"));
+            User updatedByUser = userService.selectById((Long) httpSession.getAttribute("user.id"));
             communityReferral.setUpdatedBy(updatedByUser);
             communityReferral.setUpdatedOn(new Date());
             communityReferral = communityReferralService.update(communityReferral);

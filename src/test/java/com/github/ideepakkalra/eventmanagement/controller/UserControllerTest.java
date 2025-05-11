@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Date;
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@Sql ("/UserControllerTest.sql")
 public class UserControllerTest {
 
     @Autowired
@@ -122,13 +124,13 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
         userRequest.setLastName("TestUserLastName");
         // Invalid first name length more than 100
-        userRequest.setDescription("D".repeat(2000));
+        userRequest.setDescription("D".repeat(500));
         mockMvc.perform(post("/user")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
                 .andExpect(status().isBadRequest());
-        userRequest.setDescription("D".repeat(1000));
+        userRequest.setDescription("D".repeat(200));
         // Invalid gender blank
         userRequest.setGender("");
         mockMvc.perform(post("/user")
@@ -190,7 +192,7 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
                 .andExpect(status().isBadRequest());
-        userRequest.setStatus("REFERRED");
+        userRequest.setStatus("SUBMITTED");
         // Invalid type blank string
         userRequest.setType("");
         mockMvc.perform(post("/user")
@@ -234,6 +236,38 @@ public class UserControllerTest {
                         .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
                 .andExpect(status().isBadRequest());
         userRequest.setPasscode("123456");
+        // Invalid referral id / code
+        mockMvc.perform(post("/user")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
+                .andExpect(status().isBadRequest());
+        userRequest.setReferralId(-1L);
+        mockMvc.perform(post("/user")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
+                .andExpect(status().isBadRequest());
+        userRequest.setReferralId(1L);
+        mockMvc.perform(post("/user")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
+                .andExpect(status().isBadRequest());
+        userRequest.setReferralCode("InvalidCode");
+        mockMvc.perform(post("/user")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
+                .andExpect(status().isBadRequest());
+        userRequest.setReferralCode("e3f2d82b-2859-4d0f-a2e7-5c8bc7fee334");
+        //Invalid phone number in referral
+        mockMvc.perform(post("/user")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
+                .andExpect(status().isInternalServerError());
+        userRequest.setPhoneNumber("+10000000001");
         mockMvc.perform(post("/user")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)

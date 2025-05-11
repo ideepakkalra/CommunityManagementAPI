@@ -22,7 +22,7 @@ public class CommunityReferralService {
         return communityReferralRepository.save(communityReferral);
     }
 
-    public CommunityReferral selectByIdAndCode(Integer referralId, String referralCode) {
+    public CommunityReferral selectByIdAndCode(Long referralId, String referralCode) {
         return communityReferralRepository.findByIdAndCode(referralId, referralCode);
     }
 }

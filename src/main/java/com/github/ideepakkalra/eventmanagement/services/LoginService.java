@@ -44,4 +44,8 @@ public class LoginService {
         loginRepository.save(login);
         return login;
     }
+
+    public Login create(Login login) {
+        return loginRepository.save(login);
+    }
 }

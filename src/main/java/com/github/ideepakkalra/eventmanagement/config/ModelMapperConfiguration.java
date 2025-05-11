@@ -1,12 +1,8 @@
 package com.github.ideepakkalra.eventmanagement.config;
 
 import com.github.ideepakkalra.eventmanagement.entity.CommunityReferral;
-import com.github.ideepakkalra.eventmanagement.entity.Login;
 import com.github.ideepakkalra.eventmanagement.entity.User;
-import com.github.ideepakkalra.eventmanagement.model.CommunityReferralRequest;
-import com.github.ideepakkalra.eventmanagement.model.CommunityReferralResponse;
-import com.github.ideepakkalra.eventmanagement.model.LoginRequest;
-import com.github.ideepakkalra.eventmanagement.model.LoginResponse;
+import com.github.ideepakkalra.eventmanagement.model.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -39,15 +35,30 @@ public class ModelMapperConfiguration {
 
     @Bean (name = "loginRequestToLoginModelMapper")
     public ModelMapper loginRequestToLoginModelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        TypeMap<LoginRequest, Login> typeMap = modelMapper.createTypeMap(LoginRequest.class, Login.class);
-        return modelMapper;
+        return new ModelMapper();
     }
 
     @Bean (name = "loginToLoginResponseModelMapper")
     public ModelMapper loginToLoginResponseModelMapper() {
+        return new ModelMapper();
+    }
+
+    @Bean (name = "userRequestToLoginModelMapper")
+    public ModelMapper userRequestToLoginModelMapper() {
+        return new ModelMapper();
+    }
+
+    @Bean (name = "userRequestToUserModelMapper")
+    public ModelMapper userRequestToUserModelMapper() {
+        return new ModelMapper();
+    }
+
+    @Bean (name = "userToUserResponseMapper")
+    public ModelMapper userToUserResponseMapper() {
         ModelMapper modelMapper = new ModelMapper();
-        TypeMap<Login, LoginResponse> typeMap = modelMapper.createTypeMap(Login.class, LoginResponse.class);
+        TypeMap<User, UserResponse> typeMap = modelMapper.createTypeMap(User.class, UserResponse.class);
+        Converter<User, Long> referrerConverter = mappingContext -> mappingContext.getSource().getId();
+        typeMap.addMappings(mapper -> mapper.using(referrerConverter).map(User::getReferredBy, UserResponse::setReferredBy));
         return modelMapper;
     }
 }

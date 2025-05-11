@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface CommunityReferralRepository extends JpaRepository<CommunityReferral, Long> {
 
     @Query ("SELECT cr FROM CommunityReferral cr WHERE cr.id = :referralId AND cr.code = :referralCode")
-    CommunityReferral findByIdAndCode(@Param("referralId") Integer referralId, @Param("referralCode") String referralCode);
+    CommunityReferral findByIdAndCode(@Param("referralId") Long referralId, @Param("referralCode") String referralCode);
 }

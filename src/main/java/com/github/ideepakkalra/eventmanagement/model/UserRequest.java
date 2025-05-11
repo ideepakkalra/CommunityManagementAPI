@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class UserRequest {
+public class UserRequest extends BaseRequest {
     @PositiveOrZero (message = "Invalid id.")
     private Long id;
     @PositiveOrZero (message = "Invalid version.")
@@ -23,7 +23,7 @@ public class UserRequest {
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Invalid last name.")
     @Size (max = 100, message = "Invalid last name.")
     private String lastName;
-    @Size (max = 1000, message = "Invalid description.")
+    @Size (max = 250, message = "Invalid description.")
     private String description;
     @Pattern(regexp = "MALE|FEMALE", message = "Invalid gender.")
     private String gender;
@@ -36,11 +36,15 @@ public class UserRequest {
     private Integer updatedBy;
     @Null (message = "Invalid updated on.")
     private Date updatedOn;
-    @Pattern(regexp = "REFERRED|SUBMITTED|ACCEPTED", message = "Invalid gender.")
+    @Pattern(regexp = "SUBMITTED|ACCEPTED", message = "Invalid gender.")
     private String status;
     @Pattern(regexp = "STANDARD|ADMIN", message = "Invalid type.")
     private String type;
     @Size (min = 6, max = 6, message = "Invalid passcode size. Must be 6 numbers in size.")
     @Pattern(regexp = "^\\d{6}$", message = "Invalid passcode. Only numbers allowed.")
     private String passcode;
+    @PositiveOrZero (message = "Invalid referral id.")
+    private Long referralId;
+    @Pattern( regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", message = "Invalid referral code.")
+    private String referralCode;
 }

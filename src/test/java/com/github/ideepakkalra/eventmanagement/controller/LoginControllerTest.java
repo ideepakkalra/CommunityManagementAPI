@@ -9,10 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,6 +24,9 @@ public class LoginControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private MockHttpSession httpSession;
 
     @Autowired
     private LoginController loginController;
@@ -50,12 +52,14 @@ public class LoginControllerTest {
         // With No Content
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
         LoginRequest loginRequest = new LoginRequest();
         // With All Fields Null
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().isBadRequest());
@@ -63,6 +67,7 @@ public class LoginControllerTest {
         loginRequest.setPhoneNumber("");
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().isBadRequest());
@@ -70,6 +75,7 @@ public class LoginControllerTest {
         loginRequest.setPhoneNumber("abcd");
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().isBadRequest());
@@ -77,6 +83,7 @@ public class LoginControllerTest {
         loginRequest.setPhoneNumber("910000000000");
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().isBadRequest());
@@ -84,6 +91,7 @@ public class LoginControllerTest {
         loginRequest.setPhoneNumber("+9100000000000000000");
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().isBadRequest());
@@ -91,6 +99,7 @@ public class LoginControllerTest {
         loginRequest.setPhoneNumber("+910000000000");
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().isBadRequest());
@@ -98,6 +107,7 @@ public class LoginControllerTest {
         loginRequest.setPasscode("");
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().isBadRequest());
@@ -105,6 +115,7 @@ public class LoginControllerTest {
         loginRequest.setPasscode("abcd");
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().isBadRequest());
@@ -112,6 +123,7 @@ public class LoginControllerTest {
         loginRequest.setPasscode("123456789");
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().isBadRequest());
@@ -119,6 +131,7 @@ public class LoginControllerTest {
         // All Good But No Record Found
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
@@ -132,6 +145,7 @@ public class LoginControllerTest {
         // All Good But No Record Found
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is2xxSuccessful());
@@ -145,36 +159,42 @@ public class LoginControllerTest {
         // First try
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
         // Second try
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
         // Third try
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
         // Fourth try
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
         // Fifth try
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
         // Sixth try. Account should be locked by now.
         mockMvc.perform(post("/login")
                         .with(csrf())
+                        .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is5xxServerError());

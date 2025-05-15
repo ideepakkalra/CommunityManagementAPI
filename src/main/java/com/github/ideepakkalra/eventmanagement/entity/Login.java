@@ -2,10 +2,14 @@ package com.github.ideepakkalra.eventmanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "T_LOGIN")
 public class Login {

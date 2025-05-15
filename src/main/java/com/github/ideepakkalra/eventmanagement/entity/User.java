@@ -2,10 +2,14 @@ package com.github.ideepakkalra.eventmanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "T_USER")
 public class User {
@@ -13,7 +17,7 @@ public class User {
         MALE, FEMALE
     }
     public enum Status {
-        REFERRED, SUBMITTED, ACCEPTED
+        SUBMITTED, ACCEPTED
     }
     public enum Type {
         STANDARD, ADMIN
@@ -32,11 +36,13 @@ public class User {
     private String description;
     private Gender gender;
     private Date dateOfBirth;
-    @OneToOne
+    @ToString.Exclude
+    @ManyToOne
     private User referredBy;
-    @OneToOne
+    @ToString.Exclude
+    @ManyToOne
     private User updatedBy;
     private Date updatedOn;
-    private Status status = Status.REFERRED;
+    private Status status = Status.SUBMITTED;
     private Type type = Type.STANDARD;
 }

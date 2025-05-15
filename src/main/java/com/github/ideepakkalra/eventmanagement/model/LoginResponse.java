@@ -2,13 +2,11 @@ package com.github.ideepakkalra.eventmanagement.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class LoginResponse {
-    public enum Status {
-        SUCCESS, FAILURE, LOCKED
-    }
-    private Status status;
-    private String message;
+@NoArgsConstructor
+public class LoginResponse extends BaseResponse {
+    private Long userId;
 }

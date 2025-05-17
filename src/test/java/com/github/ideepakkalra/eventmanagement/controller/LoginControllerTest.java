@@ -39,16 +39,12 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void testPost403Response() throws Exception {
+    public void testPost4xxResponse() throws Exception {
         // With No Content
         mockMvc.perform(post("/login")
                         //.with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isForbidden());
-    }
-
-    @Test
-    public void testPost400Response() throws Exception {
         // With No Content
         mockMvc.perform(post("/login")
                         .with(csrf())
@@ -138,7 +134,7 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void testPost200Response() throws Exception {
+    public void testPost2xxResponse() throws Exception {
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setPhoneNumber("+10000000000");
         loginRequest.setPasscode("000000");
@@ -152,7 +148,7 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void testPost500Response() throws Exception {
+    public void testPost5xxResponse() throws Exception {
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setPhoneNumber("+10000000001");
         loginRequest.setPasscode("111111");

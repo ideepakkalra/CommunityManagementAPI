@@ -58,7 +58,6 @@ public class CommunityReferralController {
             communityReferralResponse.setMessage("Invalid id / code / version / state.");
             return ResponseEntity.badRequest().body(communityReferralResponse);
         }
-        System.err.println(communityReferralRequest);
         try {
             CommunityReferral communityReferral = communicationReferralRequestToCommunicationReferralModelMapper.map(communityReferralRequest, CommunityReferral.class);
             User user = userService.selectById((Long) httpSession.getAttribute("user.id"));
@@ -74,7 +73,6 @@ public class CommunityReferralController {
             communityReferralResponse.setMessage(unfe.getMessage());
             return ResponseEntity.badRequest().body(communityReferralResponse);
         } catch (Exception e) {
-            e.printStackTrace();
             communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
             communityReferralResponse.setMessage(e.getMessage());
             return ResponseEntity.internalServerError().body(communityReferralResponse);
@@ -110,7 +108,6 @@ public class CommunityReferralController {
             communityReferralResponse.setMessage(unfe.getMessage());
             return ResponseEntity.badRequest().body(communityReferralResponse);
         } catch (Exception e) {
-            e.printStackTrace();
             communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
             communityReferralResponse.setMessage(e.getMessage());
             return ResponseEntity.internalServerError().body(communityReferralResponse);

@@ -19,6 +19,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User update(User user) {
+        user.setUpdatedOn(new Date());
+        return userRepository.save(user);
+
+    }
+
     public User selectById(Long id) throws Exception {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }

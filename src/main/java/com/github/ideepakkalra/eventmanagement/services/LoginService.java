@@ -2,11 +2,9 @@ package com.github.ideepakkalra.eventmanagement.services;
 
 import com.github.ideepakkalra.eventmanagement.db.LoginRepository;
 import com.github.ideepakkalra.eventmanagement.entity.Login;
-import com.github.ideepakkalra.eventmanagement.entity.User;
 import com.github.ideepakkalra.eventmanagement.exceptions.AccountLockedException;
 import com.github.ideepakkalra.eventmanagement.exceptions.AccountNotFoundException;
 import com.github.ideepakkalra.eventmanagement.exceptions.InvalidCredentialsException;
-import com.github.ideepakkalra.eventmanagement.model.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +44,14 @@ public class LoginService {
     }
 
     public Login create(Login login) {
+        return loginRepository.save(login);
+    }
+
+    public Login selectByPhoneNumber(String phoneNumber) {
+        return loginRepository.findByPhoneNumber(phoneNumber);
+    }
+
+    public Login update(Login login) {
         return loginRepository.save(login);
     }
 }

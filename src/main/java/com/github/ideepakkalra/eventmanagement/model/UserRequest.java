@@ -2,9 +2,11 @@ package com.github.ideepakkalra.eventmanagement.model;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class UserRequest extends BaseRequest {
     @PositiveOrZero (message = "Invalid id.")
@@ -18,10 +20,10 @@ public class UserRequest extends BaseRequest {
     @Email (message = "Invalid email address.")
     private String email;
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Invalid first name.")
-    @Size (max = 100, message = "Invalid first name.")
+    @Size (min = 1, max = 100, message = "Invalid first name.")
     private String firstName;
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Invalid last name.")
-    @Size (max = 100, message = "Invalid last name.")
+    @Size (min = 1, max = 100, message = "Invalid last name.")
     private String lastName;
     @Size (max = 250, message = "Invalid description.")
     private String description;

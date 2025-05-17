@@ -316,7 +316,7 @@ public class UserControllerTest {
         mockMvc.perform(put("/user")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isForbidden());
-        httpSession.setAttribute("user.id", 1L);
+        httpSession.setAttribute("user.id", 100L);
         httpSession.setAttribute("user.type", "STANDARD");
         // Invalid requests
         mockMvc.perform(put("/user")
@@ -325,7 +325,7 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
         UserRequest userRequest = new UserRequest();
-        userRequest.setId(1L);
+        userRequest.setId(100L);
         mockMvc.perform(put("/user")
                         .with(csrf())
                         .session(httpSession)
@@ -340,7 +340,7 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
                 .andExpect(status().isBadRequest());
-        userRequest.setPhoneNumber("+10000000001");
+        userRequest.setPhoneNumber("+11111111111");
         // Invalid email blank email
         userRequest.setEmail("");
         mockMvc.perform(put("/user")
@@ -554,7 +554,7 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
                 .andExpect(status().isBadRequest());
-        userRequest.setId(1L);
+        userRequest.setId(100L);
         mockMvc.perform(put("/user")
                         .with(csrf())
                         .session(httpSession)

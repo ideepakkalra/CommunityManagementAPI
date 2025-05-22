@@ -1,6 +1,5 @@
 package com.github.ideepakkalra.eventmanagement.model;
 
-import com.github.ideepakkalra.eventmanagement.entity.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -10,7 +9,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @ToString
-public class UserResponse  extends BaseResponse {
+public class UserResponse extends BaseResponse {
     private Long id;
     private Integer version;
     private String phoneNumber;
@@ -18,7 +17,7 @@ public class UserResponse  extends BaseResponse {
     private String firstName;
     private String lastName;
     private String description;
-    private User.Gender gender;
+    private String gender;
     private Date dateOfBirth;
     private Long referredBy;
     private Long updatedBy;

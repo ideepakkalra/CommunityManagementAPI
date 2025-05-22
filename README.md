@@ -1,2 +1,2 @@
-# EventManagementAPI
-Small event management API in Java.
+# CommunityManagementAPI
+Small community management API in Java.

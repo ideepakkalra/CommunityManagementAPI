@@ -6,6 +6,7 @@ import com.github.ideepakkalra.eventmanagement.exceptions.InvalidCredentialsExce
 import com.github.ideepakkalra.eventmanagement.model.BaseResponse;
 import com.github.ideepakkalra.eventmanagement.model.LoginRequest;
 import com.github.ideepakkalra.eventmanagement.model.LoginResponse;
+import com.github.ideepakkalra.eventmanagement.model.UserResponse;
 import com.github.ideepakkalra.eventmanagement.services.LoginService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -33,6 +34,10 @@ public class LoginController {
     @Qualifier (value = "loginToLoginResponseModelMapper")
     private ModelMapper loginToLoginResponseModelMapper;
 
+    @Autowired
+    @Qualifier (value = "userToUserResponseMapper")
+    private ModelMapper userToUserResponseMapper;
+
     @PostMapping (value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpSession httpSession) {
         LoginResponse loginResponse = new LoginResponse();
@@ -42,6 +47,7 @@ public class LoginController {
             httpSession.setAttribute("user.id", login.getUser().getId());
             httpSession.setAttribute("user.type", login.getUser().getType());
             loginToLoginResponseModelMapper.map(login, loginResponse);
+            loginResponse.setUserResponse(userToUserResponseMapper.map(login.getUser(), UserResponse.class));
             loginResponse.setStatus(LoginResponse.Status.SUCCESS);
             return ResponseEntity.ok(loginResponse);
         } catch (InvalidCredentialsException ice) {
@@ -51,6 +57,7 @@ public class LoginController {
             loginResponse.setMessage(nfe.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(loginResponse);
         } catch (Exception e) {
+            e.printStackTrace();
             loginResponse.setMessage(e.getMessage());
             return ResponseEntity.internalServerError().body(loginResponse);
         }

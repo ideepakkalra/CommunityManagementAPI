@@ -23,4 +23,5 @@ public class UserResponse extends BaseResponse {
     private Long updatedBy;
     private Date updatedOn;
     private String type;
+    private String state;
 }

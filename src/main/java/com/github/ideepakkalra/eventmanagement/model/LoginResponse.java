@@ -13,17 +13,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponse extends BaseResponse {
-    private Long userId;
-    private Integer version;
-    private String phoneNumber;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String description;
-    private String gender;
-    private Date dateOfBirth;
-    private Long referredBy;
-    private Long updatedBy;
-    private Date updatedOn;
-    private String type;
+    private Long id;
+    private UserResponse userResponse;
 }

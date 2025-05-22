@@ -113,7 +113,7 @@ public class UserController {
                 Login login = loginService.selectByPhoneNumber(userRequest.getPhoneNumber());
                 login.setPasscode(userRequest.getPasscode());
                 login.setRetryCount(0);
-                login.setStatus(Login.Status.SUCCESS);
+                login.setState(Login.State.SUCCESS);
                 loginService.update(login);
             }
             userRequestToUserModelMapper.map(userRequest, user);

@@ -38,8 +38,8 @@ public class UserRequest extends BaseRequest {
     private Integer updatedBy;
     @Null (message = "Invalid updated on.")
     private Date updatedOn;
-    @Pattern(regexp = "SUBMITTED|ACCEPTED", message = "Invalid gender.")
-    private String status;
+    @Pattern(regexp = "INACTIVE|ACTIVE", message = "Invalid state.")
+    private String state;
     @Pattern(regexp = "STANDARD|ADMIN", message = "Invalid type.")
     private String type;
     @Size (min = 6, max = 6, message = "Invalid passcode size. Must be 6 numbers in size.")

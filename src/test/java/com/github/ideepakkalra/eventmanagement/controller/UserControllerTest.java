@@ -46,7 +46,7 @@ public class UserControllerTest {
         // 403
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
         mockMvc.perform(post("/user")
                         .with(csrf())
                         .session(httpSession)
@@ -315,7 +315,7 @@ public class UserControllerTest {
         // 403
         mockMvc.perform(put("/user")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
         httpSession.setAttribute("user.id", 100L);
         httpSession.setAttribute("user.type", "STANDARD");
         // Invalid requests

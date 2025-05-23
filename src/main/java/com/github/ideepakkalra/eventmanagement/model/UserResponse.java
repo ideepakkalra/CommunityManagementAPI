@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @ToString
-public class UserResponse extends BaseResponse {
+public class UserResponse {
     private Long id;
     private Integer version;
     private String phoneNumber;

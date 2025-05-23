@@ -2,13 +2,11 @@ package com.github.ideepakkalra.eventmanagement.model;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class UserRequest extends BaseRequest {
+public class UserRequest {
     @PositiveOrZero (message = "Invalid id.")
     private Long id;
     @PositiveOrZero (message = "Invalid version.")

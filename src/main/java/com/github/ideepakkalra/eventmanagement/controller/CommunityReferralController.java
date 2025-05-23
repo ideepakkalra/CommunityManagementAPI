@@ -3,7 +3,6 @@ package com.github.ideepakkalra.eventmanagement.controller;
 import com.github.ideepakkalra.eventmanagement.entity.CommunityReferral;
 import com.github.ideepakkalra.eventmanagement.entity.User;
 import com.github.ideepakkalra.eventmanagement.exceptions.UserNotFoundException;
-import com.github.ideepakkalra.eventmanagement.model.BaseResponse;
 import com.github.ideepakkalra.eventmanagement.model.CommunityReferralRequest;
 import com.github.ideepakkalra.eventmanagement.model.CommunityReferralResponse;
 import com.github.ideepakkalra.eventmanagement.services.CommunityReferralService;
@@ -14,6 +13,7 @@ import jakarta.validation.constraints.Pattern;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +43,6 @@ public class CommunityReferralController {
         CommunityReferral communityReferral = communityReferralService.selectByIdAndCode(referralId, referralCode);
         if (communityReferral != null) {
             communicationReferralToCommunicationReferralResponseModelMapper.map(communityReferral, communityReferralResponse);
-            communityReferralResponse.setStatus(BaseResponse.Status.SUCCESS);
             return ResponseEntity.ok(communityReferralResponse);
         } else {
             return ResponseEntity.notFound().build();
@@ -54,8 +53,6 @@ public class CommunityReferralController {
     public ResponseEntity<CommunityReferralResponse> post(@Valid @RequestBody CommunityReferralRequest communityReferralRequest, HttpSession httpSession) {
         CommunityReferralResponse communityReferralResponse = new CommunityReferralResponse();
         if (communityReferralRequest.getId() != null || communityReferralRequest.getCode() != null || communityReferralRequest.getVersion() != null || !"OPEN".equals(communityReferralRequest.getState())) {
-            communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
-            communityReferralResponse.setMessage("Invalid id / code / version / state.");
             return ResponseEntity.badRequest().body(communityReferralResponse);
         }
         try {
@@ -66,16 +63,11 @@ public class CommunityReferralController {
             communityReferral.setUpdatedOn(new Date());
             communityReferral = communityReferralService.create(communityReferral);
             communicationReferralToCommunicationReferralResponseModelMapper.map(communityReferral, communityReferralResponse);
-            communityReferralResponse.setStatus(BaseResponse.Status.SUCCESS);
             return ResponseEntity.ok(communityReferralResponse);
         } catch (UserNotFoundException unfe) {
-            communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
-            communityReferralResponse.setMessage(unfe.getMessage());
-            return ResponseEntity.badRequest().body(communityReferralResponse);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
-            communityReferralResponse.setMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(communityReferralResponse);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -83,14 +75,10 @@ public class CommunityReferralController {
     public ResponseEntity<CommunityReferralResponse> put(@Valid @RequestBody CommunityReferralRequest communityReferralRequest, HttpSession httpSession) {
         CommunityReferralResponse communityReferralResponse = new CommunityReferralResponse();
         if (communityReferralRequest.getId() == null || communityReferralRequest.getCode() == null || communityReferralRequest.getVersion() == null || communityReferralRequest.getState() == null || communityReferralRequest.getReferrer() == null) {
-            communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
-            communityReferralResponse.setMessage("Invalid id / code / version / referrer / state.");
-            return ResponseEntity.badRequest().body(communityReferralResponse);
+            return ResponseEntity.badRequest().build();
         }
         if (!"ADMIN".equals(httpSession.getAttribute("user.type"))) {
-            communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
-            communityReferralResponse.setMessage("Insufficient privilege.");
-            return ResponseEntity.badRequest().body(communityReferralResponse);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(communityReferralResponse);
         }
         try {
             CommunityReferral communityReferral = communicationReferralRequestToCommunicationReferralModelMapper.map(communityReferralRequest, CommunityReferral.class);
@@ -101,16 +89,11 @@ public class CommunityReferralController {
             communityReferral.setUpdatedOn(new Date());
             communityReferral = communityReferralService.update(communityReferral);
             communicationReferralToCommunicationReferralResponseModelMapper.map(communityReferral, communityReferralResponse);
-            communityReferralResponse.setStatus(BaseResponse.Status.SUCCESS);
             return ResponseEntity.ok(communityReferralResponse);
         } catch (UserNotFoundException unfe) {
-            communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
-            communityReferralResponse.setMessage(unfe.getMessage());
-            return ResponseEntity.badRequest().body(communityReferralResponse);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            communityReferralResponse.setStatus(BaseResponse.Status.FAILURE);
-            communityReferralResponse.setMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(communityReferralResponse);
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

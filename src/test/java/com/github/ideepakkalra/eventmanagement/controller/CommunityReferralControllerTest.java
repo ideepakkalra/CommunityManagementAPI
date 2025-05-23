@@ -399,7 +399,7 @@ public class CommunityReferralControllerTest {
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
         // Set type as ADMIN in session.
         httpSession.setAttribute("user.type", "ADMIN");
         mockMvc.perform(put("/referral")

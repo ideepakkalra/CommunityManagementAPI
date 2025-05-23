@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommunityReferralResponse extends BaseResponse {
+public class CommunityReferralResponse {
     private Long id;
     private String code;
     private Integer version;

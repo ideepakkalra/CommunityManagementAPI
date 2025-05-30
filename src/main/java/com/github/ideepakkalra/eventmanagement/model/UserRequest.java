@@ -36,8 +36,8 @@ public class UserRequest {
     private Integer updatedBy;
     @Null (message = "Invalid updated on.")
     private Date updatedOn;
-    @Pattern(regexp = "INACTIVE|ACTIVE", message = "Invalid state.")
-    private String state = "ACTIVE";
+    @Pattern(regexp = "PENDING_APPROVAL|INACTIVE|ACTIVE", message = "Invalid state.")
+    private String state = "PENDING_APPROVAL";
     @Pattern(regexp = "STANDARD|ADMIN", message = "Invalid type.")
     private String type = "STANDARD";
     @Size (min = 6, max = 6, message = "Invalid passcode size. Must be 6 numbers in size.")

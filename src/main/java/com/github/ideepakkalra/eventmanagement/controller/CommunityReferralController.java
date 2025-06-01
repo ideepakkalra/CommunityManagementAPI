@@ -17,7 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 public class CommunityReferralController {
@@ -37,7 +39,7 @@ public class CommunityReferralController {
     private ModelMapper communicationReferralToCommunicationReferralResponseModelMapper;
 
     @GetMapping (value = "/referral/{referralId}/{referralCode}")
-    public ResponseEntity<CommunityReferralResponse> get(@PathVariable Long referralId, @PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+    public ResponseEntity<CommunityReferralResponse> getByReferralIdAndCode(@PathVariable Long referralId, @PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
             message = "Invalid code.") String referralCode) {
         CommunityReferralResponse communityReferralResponse = new CommunityReferralResponse();
         CommunityReferral communityReferral = communityReferralService.selectByIdAndCode(referralId, referralCode);
@@ -47,6 +49,16 @@ public class CommunityReferralController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping (value = "/referral/referrer/id/{referrerId}")
+    public ResponseEntity<List<CommunityReferralResponse>> getByReferrer(@PathVariable Long referrerId) {
+        List<CommunityReferralResponse> communityReferralResponses = new ArrayList<>();
+        List<CommunityReferral> communityReferrals = communityReferralService.selectByReferrerId(referrerId);
+        communityReferrals.forEach((communityReferral) -> {
+            communityReferralResponses.add(communicationReferralToCommunicationReferralResponseModelMapper.map(communityReferral, CommunityReferralResponse.class));
+        });
+        return ResponseEntity.ok(communityReferralResponses);
     }
 
     @PostMapping (value = "/referral")

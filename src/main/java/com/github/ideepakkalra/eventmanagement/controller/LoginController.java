@@ -6,8 +6,8 @@ import com.github.ideepakkalra.eventmanagement.exceptions.InvalidCredentialsExce
 import com.github.ideepakkalra.eventmanagement.model.LoginRequest;
 import com.github.ideepakkalra.eventmanagement.model.LoginResponse;
 import com.github.ideepakkalra.eventmanagement.model.UserResponse;
+import com.github.ideepakkalra.eventmanagement.services.JWTService;
 import com.github.ideepakkalra.eventmanagement.services.LoginService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +19,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Collections;
+
 @RestController
 public class LoginController {
 
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private JWTService jwtService;
 
     @Autowired
     @Qualifier(value = "loginRequestToLoginModelMapper")
@@ -38,13 +45,12 @@ public class LoginController {
     private ModelMapper userToUserResponseMapper;
 
     @PostMapping (value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpSession httpSession) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResponse loginResponse = new LoginResponse();
         try {
             Login login = loginService.login(loginRequestToLoginModelMapper.map(loginRequest, Login.class));
-            httpSession.setAttribute("user.id", login.getUser().getId());
-            httpSession.setAttribute("user.type", login.getUser().getType());
             loginToLoginResponseModelMapper.map(login, loginResponse);
+            loginResponse.setToken(jwtService.generateToken(String.valueOf(login.getUser().getId()), Collections.singletonList(String.valueOf(login.getUser().getType()))));
             loginResponse.setUser(userToUserResponseMapper.map(login.getUser(), UserResponse.class));
             return ResponseEntity.ok(loginResponse);
         } catch (InvalidCredentialsException ice) {
@@ -57,11 +63,10 @@ public class LoginController {
     }
 
     @PostMapping(value = "/logout", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoginResponse> logout(@Valid @RequestBody LoginRequest loginRequest, HttpSession httpSession) {
+    public ResponseEntity<LoginResponse> logout(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResponse loginResponse = new LoginResponse();
         try {
             Login login = loginService.logout(loginRequestToLoginModelMapper.map(loginRequest, Login.class));
-            httpSession.invalidate();
             loginToLoginResponseModelMapper.map(login, loginResponse);
             return ResponseEntity.ok(loginResponse);
         } catch (Exception e) {

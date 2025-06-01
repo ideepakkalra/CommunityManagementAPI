@@ -17,7 +17,7 @@ public class CommunityReferralRequest {
     private String code;
     @PositiveOrZero (message = "Invalid id.")
     private Integer version;
-    @NotNull (message = "Invalid referrer.")
+    //@NotNull (message = "Invalid referrer.")
     @PositiveOrZero (message = "Invalid referrer.")
     private Long referrer;
     @NotEmpty (message = "Invalid phone number.")

@@ -55,9 +55,7 @@ public class CommunityReferralController {
     public ResponseEntity<List<CommunityReferralResponse>> getByReferrer(@PathVariable Long referrerId) {
         List<CommunityReferralResponse> communityReferralResponses = new ArrayList<>();
         List<CommunityReferral> communityReferrals = communityReferralService.selectByReferrerId(referrerId);
-        communityReferrals.forEach((communityReferral) -> {
-            communityReferralResponses.add(communicationReferralToCommunicationReferralResponseModelMapper.map(communityReferral, CommunityReferralResponse.class));
-        });
+        communityReferrals.forEach((communityReferral) -> communityReferralResponses.add(communicationReferralToCommunicationReferralResponseModelMapper.map(communityReferral, CommunityReferralResponse.class)));
         return ResponseEntity.ok(communityReferralResponses);
     }
 

@@ -6,6 +6,7 @@ import com.github.ideepakkalra.eventmanagement.exceptions.UserNotFoundException;
 import com.github.ideepakkalra.eventmanagement.model.CommunityReferralRequest;
 import com.github.ideepakkalra.eventmanagement.model.CommunityReferralResponse;
 import com.github.ideepakkalra.eventmanagement.services.CommunityReferralService;
+import com.github.ideepakkalra.eventmanagement.services.JWTService;
 import com.github.ideepakkalra.eventmanagement.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -29,6 +30,9 @@ public class CommunityReferralController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JWTService jwtService;
 
     @Autowired
     @Qualifier (value = "communicationReferralRequestToCommunicationReferralModelMapper")
@@ -60,14 +64,14 @@ public class CommunityReferralController {
     }
 
     @PostMapping (value = "/referral")
-    public ResponseEntity<CommunityReferralResponse> post(@Valid @RequestBody CommunityReferralRequest communityReferralRequest, HttpSession httpSession) {
+    public ResponseEntity<CommunityReferralResponse> post(@Valid @RequestBody CommunityReferralRequest communityReferralRequest, @RequestHeader("Authorization") String authorization) {
         CommunityReferralResponse communityReferralResponse = new CommunityReferralResponse();
         if (communityReferralRequest.getId() != null || communityReferralRequest.getCode() != null || communityReferralRequest.getVersion() != null || !"OPEN".equals(communityReferralRequest.getState())) {
             return ResponseEntity.badRequest().body(communityReferralResponse);
         }
         try {
             CommunityReferral communityReferral = communicationReferralRequestToCommunicationReferralModelMapper.map(communityReferralRequest, CommunityReferral.class);
-            User user = userService.selectById((Long) httpSession.getAttribute("user.id"));
+            User user = userService.selectById(Long.parseLong((String) jwtService.getClaim(authorization, JWTService.CLAIM_SUB)));
             communityReferral.setReferrer(user);
             communityReferral.setUpdatedBy(user);
             communityReferral.setUpdatedOn(new Date());

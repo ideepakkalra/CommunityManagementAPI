@@ -8,6 +8,7 @@ import com.github.ideepakkalra.eventmanagement.model.CommunityReferralResponse;
 import com.github.ideepakkalra.eventmanagement.services.CommunityReferralService;
 import com.github.ideepakkalra.eventmanagement.services.JWTService;
 import com.github.ideepakkalra.eventmanagement.services.UserService;
+import com.github.ideepakkalra.eventmanagement.services.WhatsAppService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
@@ -33,6 +34,9 @@ public class CommunityReferralController {
 
     @Autowired
     private JWTService jwtService;
+
+    @Autowired
+    WhatsAppService whatsAppService;
 
     @Autowired
     @Qualifier (value = "communicationReferralRequestToCommunicationReferralModelMapper")
@@ -106,6 +110,19 @@ public class CommunityReferralController {
             return ResponseEntity.ok(communityReferralResponse);
         } catch (UserNotFoundException unfe) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping (value = "/referral/invite/send/{referralId}")
+    public ResponseEntity<Boolean> sendCommunityReferralInvite(@PathVariable Long referralId, @RequestHeader("Authorization") String authorization) {
+        try {
+            CommunityReferral communityReferral = communityReferralService.selectById(referralId);
+            if (communityReferral == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(whatsAppService.sendCommunityReferralInvite(communityReferral.getPhoneNumber(), communityReferral.getCode()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

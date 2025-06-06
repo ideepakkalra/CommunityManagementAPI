@@ -30,4 +30,8 @@ public class CommunityReferralService {
     public List<CommunityReferral> selectByReferrerId(Long referrerId) {
         return communityReferralRepository.findByReferrerId(referrerId);
     }
+
+    public CommunityReferral selectById(Long referrerId) {
+        return communityReferralRepository.findById(referrerId).orElse(null);
+    }
 }

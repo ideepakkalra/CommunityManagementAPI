@@ -19,10 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collections;
-
 @RestController
 public class LoginController {
 
@@ -50,7 +46,7 @@ public class LoginController {
         try {
             Login login = loginService.login(loginRequestToLoginModelMapper.map(loginRequest, Login.class));
             loginToLoginResponseModelMapper.map(login, loginResponse);
-            loginResponse.setToken(jwtService.generateToken(String.valueOf(login.getUser().getId()), Collections.singletonList(String.valueOf(login.getUser().getType()))));
+            loginResponse.setToken(jwtService.generateToken(String.valueOf(login.getUser().getId()), String.valueOf(login.getUser().getType())));
             loginResponse.setUser(userToUserResponseMapper.map(login.getUser(), UserResponse.class));
             return ResponseEntity.ok(loginResponse);
         } catch (InvalidCredentialsException ice) {

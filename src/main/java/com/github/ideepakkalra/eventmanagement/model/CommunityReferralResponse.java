@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CommunityReferralResponse {
     private Long id;
-    private String code;
     private Integer version;
     private Long referrer;
     private String phoneNumber;

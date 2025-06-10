@@ -3,11 +3,11 @@ package com.github.ideepakkalra.eventmanagement.controller;
 import com.github.ideepakkalra.eventmanagement.entity.Login;
 import com.github.ideepakkalra.eventmanagement.exceptions.AccountNotFoundException;
 import com.github.ideepakkalra.eventmanagement.exceptions.InvalidCredentialsException;
-import com.github.ideepakkalra.eventmanagement.model.BaseResponse;
 import com.github.ideepakkalra.eventmanagement.model.LoginRequest;
 import com.github.ideepakkalra.eventmanagement.model.LoginResponse;
+import com.github.ideepakkalra.eventmanagement.model.UserResponse;
+import com.github.ideepakkalra.eventmanagement.services.JWTService;
 import com.github.ideepakkalra.eventmanagement.services.LoginService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +26,9 @@ public class LoginController {
     private LoginService loginService;
 
     @Autowired
+    private JWTService jwtService;
+
+    @Autowired
     @Qualifier(value = "loginRequestToLoginModelMapper")
     private ModelMapper loginRequestToLoginModelMapper;
 
@@ -33,43 +36,37 @@ public class LoginController {
     @Qualifier (value = "loginToLoginResponseModelMapper")
     private ModelMapper loginToLoginResponseModelMapper;
 
+    @Autowired
+    @Qualifier (value = "userToUserResponseMapper")
+    private ModelMapper userToUserResponseMapper;
+
     @PostMapping (value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpSession httpSession) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setStatus(BaseResponse.Status.FAILURE);
         try {
             Login login = loginService.login(loginRequestToLoginModelMapper.map(loginRequest, Login.class));
-            httpSession.setAttribute("user.id", login.getUser().getId());
-            httpSession.setAttribute("user.type", login.getUser().getType());
             loginToLoginResponseModelMapper.map(login, loginResponse);
-            loginResponse.setStatus(LoginResponse.Status.SUCCESS);
+            loginResponse.setToken(jwtService.generateToken(String.valueOf(login.getUser().getId()), String.valueOf(login.getUser().getType())));
+            loginResponse.setUser(userToUserResponseMapper.map(login.getUser(), UserResponse.class));
             return ResponseEntity.ok(loginResponse);
         } catch (InvalidCredentialsException ice) {
-            loginResponse.setMessage(ice.getMessage());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(loginResponse);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (AccountNotFoundException nfe) {
-            loginResponse.setMessage(nfe.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(loginResponse);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            loginResponse.setMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(loginResponse);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @PostMapping(value = "/logout", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoginResponse> logout(@Valid @RequestBody LoginRequest loginRequest, HttpSession httpSession) {
+    public ResponseEntity<LoginResponse> logout(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResponse loginResponse = new LoginResponse();
-
         try {
             Login login = loginService.logout(loginRequestToLoginModelMapper.map(loginRequest, Login.class));
-            httpSession.invalidate();
             loginToLoginResponseModelMapper.map(login, loginResponse);
-            loginResponse.setStatus(BaseResponse.Status.SUCCESS);
             return ResponseEntity.ok(loginResponse);
         } catch (Exception e) {
-            loginResponse.setStatus(BaseResponse.Status.FAILURE);
-            loginResponse.setMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(loginResponse);
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

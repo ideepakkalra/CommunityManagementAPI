@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse extends BaseResponse {
-    private Long userId;
+public class LoginResponse {
+    private String token;
+    private UserResponse user;
 }

@@ -3,7 +3,6 @@ package com.github.ideepakkalra.eventmanagement.controller;
 import com.github.ideepakkalra.eventmanagement.entity.CommunityReferral;
 import com.github.ideepakkalra.eventmanagement.entity.Login;
 import com.github.ideepakkalra.eventmanagement.entity.User;
-import com.github.ideepakkalra.eventmanagement.model.BaseResponse;
 import com.github.ideepakkalra.eventmanagement.model.UserRequest;
 import com.github.ideepakkalra.eventmanagement.model.UserResponse;
 import com.github.ideepakkalra.eventmanagement.services.CommunityReferralService;
@@ -52,9 +51,7 @@ public class UserController {
             CommunityReferral communityReferral = communityReferralService.selectByIdAndCode(userRequest.getReferralId(), userRequest.getReferralCode());
             if (communityReferral != null && "OPEN".equals(communityReferral.getState().toString()) && userRequest.getId() == null) {
                 if (!communityReferral.getPhoneNumber().equals(userRequest.getPhoneNumber())) {
-                    userResponse.setStatus(BaseResponse.Status.FAILURE);
-                    userResponse.setMessage("Invalid phone number in referral.");
-                    return ResponseEntity.internalServerError().body(userResponse);
+                    return ResponseEntity.internalServerError().build();
                 }
                 User user = userRequestToUserModelMapper.map(userRequest, User.class);
                 user.setReferredBy(communityReferral.getReferrer());
@@ -68,17 +65,12 @@ public class UserController {
                 communityReferralService.update(communityReferral);
                 httpSession.setAttribute("user.id", login.getUser().getId());
                 httpSession.setAttribute("user.type", login.getUser().getType());
-                userResponse.setStatus(BaseResponse.Status.SUCCESS);
                 return ResponseEntity.ok(userResponse);
             } else {
-                userResponse.setStatus(BaseResponse.Status.FAILURE);
-                userResponse.setMessage("Invalid referral id / code.");
-                return ResponseEntity.badRequest().body(userResponse);
+                return ResponseEntity.badRequest().build();
             }
         } catch (Exception e) {
-            userResponse.setStatus(BaseResponse.Status.FAILURE);
-            userResponse.setMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(userResponse);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -89,31 +81,25 @@ public class UserController {
             User user = userService.selectById(userRequest.getId());
             // Common validations
             if (userRequest.getId() < 0 || userRequest.getVersion() < 0 || !user.getPhoneNumber().equals(userRequest.getPhoneNumber())) {
-                userResponse.setStatus(BaseResponse.Status.FAILURE);
-                userResponse.setMessage("Invalid user data.");
-                return ResponseEntity.badRequest().body(userResponse);
+                return ResponseEntity.badRequest().build();
             }
             // Standard user validations
             if ("STANDARD".equals(httpSession.getAttribute("user.type"))) {
                 // Can only update own record
                 if (!httpSession.getAttribute("user.id").equals(userRequest.getId())) {
-                    userResponse.setStatus(BaseResponse.Status.FAILURE);
-                    userResponse.setMessage("Invalid request");
-                    return ResponseEntity.badRequest().body(userResponse);
+                    return ResponseEntity.badRequest().build();
                 }
             } else {
                 // Can not update own record
                 if (httpSession.getAttribute("user.id").equals(userRequest.getId())) {
-                    userResponse.setStatus(BaseResponse.Status.FAILURE);
-                    userResponse.setMessage("Invalid request");
-                    return ResponseEntity.badRequest().body(userResponse);
+                    return ResponseEntity.badRequest().build();
                 }
             }
             if (userRequest.getPasscode() != null) {
                 Login login = loginService.selectByPhoneNumber(userRequest.getPhoneNumber());
                 login.setPasscode(userRequest.getPasscode());
                 login.setRetryCount(0);
-                login.setStatus(Login.Status.SUCCESS);
+                login.setState(Login.State.SUCCESS);
                 loginService.update(login);
             }
             userRequestToUserModelMapper.map(userRequest, user);
@@ -121,12 +107,9 @@ public class UserController {
             user.setUpdatedBy(userService.selectById(Long.valueOf(httpSession.getAttribute("user.id").toString())));
             user = userService.update(user);
             userToUserResponseMapper.map(user, userResponse);
-            userResponse.setStatus(BaseResponse.Status.SUCCESS);
             return ResponseEntity.ok(userResponse);
         } catch (Exception e) {
-            userResponse.setStatus(BaseResponse.Status.FAILURE);
-            userResponse.setMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(userResponse);
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

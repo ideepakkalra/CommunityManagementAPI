@@ -44,7 +44,7 @@ public class LoginControllerTest {
         mockMvc.perform(post("/login")
                         //.with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
         // With No Content
         mockMvc.perform(post("/login")
                         .with(csrf())

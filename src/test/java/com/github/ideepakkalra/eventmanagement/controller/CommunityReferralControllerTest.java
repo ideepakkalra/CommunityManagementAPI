@@ -72,7 +72,7 @@ public class CommunityReferralControllerTest {
         // With No access
         mockMvc.perform(post("/referral")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
         // With No Content
         mockMvc.perform(post("/referral")
                         .with(csrf())
@@ -234,7 +234,7 @@ public class CommunityReferralControllerTest {
         // With No access
         mockMvc.perform(put("/referral")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
         // With No Content
         mockMvc.perform(put("/referral")
                         .with(csrf())
@@ -399,7 +399,7 @@ public class CommunityReferralControllerTest {
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(communityReferralRequest)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
         // Set type as ADMIN in session.
         httpSession.setAttribute("user.type", "ADMIN");
         mockMvc.perform(put("/referral")

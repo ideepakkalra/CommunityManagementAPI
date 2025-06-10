@@ -2,13 +2,11 @@ package com.github.ideepakkalra.eventmanagement.model;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class UserRequest extends BaseRequest {
+public class UserRequest {
     @PositiveOrZero (message = "Invalid id.")
     private Long id;
     @PositiveOrZero (message = "Invalid version.")
@@ -38,10 +36,10 @@ public class UserRequest extends BaseRequest {
     private Integer updatedBy;
     @Null (message = "Invalid updated on.")
     private Date updatedOn;
-    @Pattern(regexp = "SUBMITTED|ACCEPTED", message = "Invalid gender.")
-    private String status;
+    @Pattern(regexp = "PENDING_APPROVAL|INACTIVE|ACTIVE", message = "Invalid state.")
+    private String state = "PENDING_APPROVAL";
     @Pattern(regexp = "STANDARD|ADMIN", message = "Invalid type.")
-    private String type;
+    private String type = "STANDARD";
     @Size (min = 6, max = 6, message = "Invalid passcode size. Must be 6 numbers in size.")
     @Pattern(regexp = "^\\d{6}$", message = "Invalid passcode. Only numbers allowed.")
     private String passcode;

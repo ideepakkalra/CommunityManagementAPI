@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class LoginRequest extends BaseRequest {
+public class LoginRequest {
     @NotEmpty(message = "Invalid phone number.")
     @Size (min = 10, max = 14, message = "Invalid phone number. Must be between 10-14 numbers with +country code.")
     @Pattern(regexp = "^\\+\\d{1,3}\\d{4,14}$", message = "Invalid phone number. Only numbers allowed.")

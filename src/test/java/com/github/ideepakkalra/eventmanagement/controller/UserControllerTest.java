@@ -46,7 +46,7 @@ public class UserControllerTest {
         // 403
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
         mockMvc.perform(post("/user")
                         .with(csrf())
                         .session(httpSession)
@@ -200,7 +200,7 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
         userRequest.setUpdatedOn(null);
         // Invalid status blank string
-        userRequest.setStatus("");
+        userRequest.setState("");
         mockMvc.perform(post("/user")
                         .with(csrf())
                         .session(httpSession)
@@ -208,14 +208,14 @@ public class UserControllerTest {
                         .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
                 .andExpect(status().isBadRequest());
         // Invalid status wrong string
-        userRequest.setStatus("UNKNOWN");
+        userRequest.setState("UNKNOWN");
         mockMvc.perform(post("/user")
                         .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
                 .andExpect(status().isBadRequest());
-        userRequest.setStatus("SUBMITTED");
+        userRequest.setState("ACTIVE");
         // Invalid type blank string
         userRequest.setType("");
         mockMvc.perform(post("/user")
@@ -315,7 +315,7 @@ public class UserControllerTest {
         // 403
         mockMvc.perform(put("/user")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
         httpSession.setAttribute("user.id", 100L);
         httpSession.setAttribute("user.type", "STANDARD");
         // Invalid requests
@@ -471,7 +471,7 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
         userRequest.setUpdatedOn(null);
         // Invalid status blank string
-        userRequest.setStatus("");
+        userRequest.setState("");
         mockMvc.perform(put("/user")
                         .with(csrf())
                         .session(httpSession)
@@ -479,14 +479,14 @@ public class UserControllerTest {
                         .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
                 .andExpect(status().isBadRequest());
         // Invalid status wrong string
-        userRequest.setStatus("UNKNOWN");
+        userRequest.setState("UNKNOWN");
         mockMvc.perform(put("/user")
                         .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(userRequest)))
                 .andExpect(status().isBadRequest());
-        userRequest.setStatus("SUBMITTED");
+        userRequest.setState("ACTIVE");
         // Invalid type blank string
         userRequest.setType("");
         mockMvc.perform(put("/user")

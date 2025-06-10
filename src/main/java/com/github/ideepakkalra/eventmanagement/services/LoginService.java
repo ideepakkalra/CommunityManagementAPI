@@ -18,19 +18,19 @@ public class LoginService {
 
     public Login login(Login login) throws Exception {
         Login loginEntity = loginRepository.findById(login.getPhoneNumber()).orElseThrow(AccountNotFoundException::new);
-        if (loginEntity.getStatus() == Login.Status.LOCKED) {
+        if (loginEntity.getState() == Login.State.LOCKED) {
             throw new AccountLockedException();
         } else if (!login.getPasscode().equals(loginEntity.getPasscode())) {
             loginEntity.setRetryCount(loginEntity.getRetryCount() + 1);
-            loginEntity.setStatus(Login.Status.FAILURE);
+            loginEntity.setState(Login.State.FAILURE);
             if (loginEntity.getRetryCount() >= 5) {
-                loginEntity.setStatus(Login.Status.LOCKED);
+                loginEntity.setState(Login.State.LOCKED);
             }
             loginRepository.save(loginEntity);
             throw new InvalidCredentialsException();
         }
         loginEntity.setRetryCount(0);
-        loginEntity.setStatus(Login.Status.SUCCESS);
+        loginEntity.setState(Login.State.SUCCESS);
         loginEntity.setLoginDate(new Date());
         loginRepository.save(loginEntity);
         return loginEntity;

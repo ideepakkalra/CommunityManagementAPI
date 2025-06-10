@@ -13,13 +13,13 @@ import java.util.Date;
 @Entity
 @Table(name = "T_LOGIN")
 public class Login {
-    public enum Status {
+    public enum State {
         SUCCESS, FAILURE, LOCKED
     }
     @Id
     private String phoneNumber;
     private String passcode;
-    private Status status;
+    private State state;
     private Date loginDate;
     private Date logoutDate;
     @OneToOne

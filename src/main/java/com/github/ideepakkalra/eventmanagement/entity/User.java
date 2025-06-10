@@ -16,8 +16,8 @@ public class User {
     public enum Gender {
         MALE, FEMALE
     }
-    public enum Status {
-        SUBMITTED, ACCEPTED
+    public enum State {
+        PENDING_APPROVAL, INACTIVE, ACTIVE
     }
     public enum Type {
         STANDARD, ADMIN
@@ -43,6 +43,6 @@ public class User {
     @ManyToOne
     private User updatedBy;
     private Date updatedOn;
-    private Status status = Status.SUBMITTED;
+    private State state = State.PENDING_APPROVAL;
     private Type type = Type.STANDARD;
 }

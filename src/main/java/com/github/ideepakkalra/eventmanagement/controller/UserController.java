@@ -6,19 +6,16 @@ import com.github.ideepakkalra.eventmanagement.entity.User;
 import com.github.ideepakkalra.eventmanagement.model.UserRequest;
 import com.github.ideepakkalra.eventmanagement.model.UserResponse;
 import com.github.ideepakkalra.eventmanagement.services.CommunityReferralService;
+import com.github.ideepakkalra.eventmanagement.services.JWTService;
 import com.github.ideepakkalra.eventmanagement.services.LoginService;
 import com.github.ideepakkalra.eventmanagement.services.UserService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -33,6 +30,9 @@ public class UserController {
     private LoginService loginService;
 
     @Autowired
+    private JWTService jwtService;
+
+    @Autowired
     @Qualifier(value = "userRequestToLoginModelMapper")
     private ModelMapper userRequestToLoginModelMapper;
 
@@ -45,7 +45,7 @@ public class UserController {
     private ModelMapper userToUserResponseMapper;
 
     @PostMapping (value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> post(@Valid @RequestBody UserRequest userRequest, HttpSession httpSession) {
+    public ResponseEntity<UserResponse> post(@Valid @RequestBody UserRequest userRequest) {
         UserResponse userResponse = new UserResponse();
         try {
             CommunityReferral communityReferral = communityReferralService.selectByIdAndCode(userRequest.getReferralId(), userRequest.getReferralCode());
@@ -63,8 +63,6 @@ public class UserController {
                 loginService.login(login);
                 communityReferral.setState(CommunityReferral.State.CLOSED);
                 communityReferralService.update(communityReferral);
-                httpSession.setAttribute("user.id", login.getUser().getId());
-                httpSession.setAttribute("user.type", login.getUser().getType());
                 return ResponseEntity.ok(userResponse);
             } else {
                 return ResponseEntity.badRequest().build();
@@ -75,23 +73,25 @@ public class UserController {
     }
 
     @PutMapping (value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> put(@Valid @RequestBody UserRequest userRequest, HttpSession httpSession) {
+    public ResponseEntity<UserResponse> put(@Valid @RequestBody UserRequest userRequest, @RequestHeader("Authorization") String authorization) {
         UserResponse userResponse = new UserResponse();
         try {
+            Long sub = jwtService.getSub(authorization);
+            String role = jwtService.getRole(authorization);
             User user = userService.selectById(userRequest.getId());
             // Common validations
             if (userRequest.getId() < 0 || userRequest.getVersion() < 0 || !user.getPhoneNumber().equals(userRequest.getPhoneNumber())) {
                 return ResponseEntity.badRequest().build();
             }
             // Standard user validations
-            if ("STANDARD".equals(httpSession.getAttribute("user.type"))) {
+            if ("STANDARD".equals(role)) {
                 // Can only update own record
-                if (!httpSession.getAttribute("user.id").equals(userRequest.getId())) {
+                if (!userRequest.getId().equals(sub)) {
                     return ResponseEntity.badRequest().build();
                 }
             } else {
                 // Can not update own record
-                if (httpSession.getAttribute("user.id").equals(userRequest.getId())) {
+                if (userRequest.getId().equals(sub)) {
                     return ResponseEntity.badRequest().build();
                 }
             }
@@ -104,7 +104,7 @@ public class UserController {
             }
             userRequestToUserModelMapper.map(userRequest, user);
             user.setReferredBy(userService.selectById(userRequest.getId()));
-            user.setUpdatedBy(userService.selectById(Long.valueOf(httpSession.getAttribute("user.id").toString())));
+            user.setUpdatedBy(userService.selectById(sub));
             user = userService.update(user);
             userToUserResponseMapper.map(user, userResponse);
             return ResponseEntity.ok(userResponse);

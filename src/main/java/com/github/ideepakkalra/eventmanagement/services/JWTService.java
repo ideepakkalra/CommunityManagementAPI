@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 public class JWTService {
@@ -31,12 +32,20 @@ public class JWTService {
                 .compact(); // Creates the token
     }
 
-    public Object getClaim(String token, String claimName) {
+    private Object getClaim(String token, String claimName) {
         try {
             Claims claims  = Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJws(token.replace("Bearer ", "")).getBody();
             return claims.get(claimName);
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public Long getSub(String token) {
+        return Long.parseLong((String) Objects.requireNonNull(getClaim(token, JWTService.CLAIM_SUB)));
+    }
+
+    public String getRole(String token) {
+        return (String) Objects.requireNonNull(getClaim(token, JWTService.CLAIM_ROLE));
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,14 +46,12 @@ public class LoginControllerTest {
                 .andExpect(status().isBadRequest());
         // With No Content
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
         LoginRequest loginRequest = new LoginRequest();
         // With All Fields Null
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -62,7 +59,6 @@ public class LoginControllerTest {
         // With PhoneNumber Blank
         loginRequest.setPhoneNumber("");
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -70,7 +66,6 @@ public class LoginControllerTest {
         // With PhoneNumber Invalid Characters
         loginRequest.setPhoneNumber("abcd");
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -78,7 +73,6 @@ public class LoginControllerTest {
         // With PhoneNumber Invalid Country Code
         loginRequest.setPhoneNumber("910000000000");
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -86,7 +80,6 @@ public class LoginControllerTest {
         // With PhoneNumber Invalid Length
         loginRequest.setPhoneNumber("+9100000000000000000");
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -94,7 +87,6 @@ public class LoginControllerTest {
         // With PhoneNumber Valid
         loginRequest.setPhoneNumber("+910000000000");
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -102,7 +94,6 @@ public class LoginControllerTest {
         // With Passcode Blank
         loginRequest.setPasscode("");
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -110,7 +101,6 @@ public class LoginControllerTest {
         // With Passcode Invalid Characters
         loginRequest.setPasscode("abcd");
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -118,7 +108,6 @@ public class LoginControllerTest {
         // With Passcode Invalid Length
         loginRequest.setPasscode("123456789");
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -126,7 +115,6 @@ public class LoginControllerTest {
         loginRequest.setPasscode("000000");
         // All Good But No Record Found
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -140,7 +128,6 @@ public class LoginControllerTest {
         loginRequest.setPasscode("000000");
         // All Good But No Record Found
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
@@ -154,42 +141,36 @@ public class LoginControllerTest {
         loginRequest.setPasscode("111111");
         // First try
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
         // Second try
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
         // Third try
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
         // Fourth try
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
         // Fifth try
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))
                 .andExpect(status().is4xxClientError());
         // Sixth try. Account should be locked by now.
         mockMvc.perform(post("/login")
-                        .with(csrf())
                         .session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(OBJECT_WRITER.writeValueAsBytes(loginRequest)))

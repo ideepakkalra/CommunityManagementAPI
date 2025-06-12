@@ -9,7 +9,6 @@ import com.github.ideepakkalra.eventmanagement.services.CommunityReferralService
 import com.github.ideepakkalra.eventmanagement.services.JWTService;
 import com.github.ideepakkalra.eventmanagement.services.UserService;
 import com.github.ideepakkalra.eventmanagement.services.WhatsAppService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.modelmapper.ModelMapper;
@@ -75,7 +74,7 @@ public class CommunityReferralController {
         }
         try {
             CommunityReferral communityReferral = communicationReferralRequestToCommunicationReferralModelMapper.map(communityReferralRequest, CommunityReferral.class);
-            User user = userService.selectById(Long.parseLong((String) jwtService.getClaim(authorization, JWTService.CLAIM_SUB)));
+            User user = userService.selectById(jwtService.getSub(authorization));
             communityReferral.setReferrer(user);
             communityReferral.setUpdatedBy(user);
             communityReferral.setUpdatedOn(new Date());
@@ -90,19 +89,19 @@ public class CommunityReferralController {
     }
 
     @PutMapping (value = "/referral")
-    public ResponseEntity<CommunityReferralResponse> put(@Valid @RequestBody CommunityReferralRequest communityReferralRequest, HttpSession httpSession) {
+    public ResponseEntity<CommunityReferralResponse> put(@Valid @RequestBody CommunityReferralRequest communityReferralRequest, @RequestHeader("Authorization") String authorization) {
         CommunityReferralResponse communityReferralResponse = new CommunityReferralResponse();
         if (communityReferralRequest.getId() == null || communityReferralRequest.getCode() == null || communityReferralRequest.getVersion() == null || communityReferralRequest.getState() == null || communityReferralRequest.getReferrer() == null) {
             return ResponseEntity.badRequest().build();
         }
-        if (!"ADMIN".equals(httpSession.getAttribute("user.type"))) {
+        if (!"ADMIN".equals(jwtService.getRole(authorization))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(communityReferralResponse);
         }
         try {
             CommunityReferral communityReferral = communicationReferralRequestToCommunicationReferralModelMapper.map(communityReferralRequest, CommunityReferral.class);
             User referrerUser = userService.selectById(communityReferralRequest.getReferrer());
             communityReferral.setReferrer(referrerUser);
-            User updatedByUser = userService.selectById((Long) httpSession.getAttribute("user.id"));
+            User updatedByUser = userService.selectById(jwtService.getSub(authorization));
             communityReferral.setUpdatedBy(updatedByUser);
             communityReferral.setUpdatedOn(new Date());
             communityReferral = communityReferralService.update(communityReferral);
